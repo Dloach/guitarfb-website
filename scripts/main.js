@@ -246,6 +246,7 @@
         constructor(canvas) {
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
+            this._styleCache = null;
             this.leftMargin = 126;
             this.rightMargin = 62;
             this.topMargin = 106;
@@ -264,6 +265,24 @@
                 this._logicalWidth = canvas.width;
                 this._logicalHeight = canvas.height;
             }
+        }
+        
+        // 从 CSS 变量读取 Canvas 颜色（自动响应主题切换）
+        _getCanvasColors() {
+            const style = getComputedStyle(document.documentElement);
+            return {
+                bg: style.getPropertyValue('--canvas-bg').trim(),
+                text: style.getPropertyValue('--canvas-text').trim(),
+                subText: style.getPropertyValue('--canvas-subtext').trim(),
+                line: style.getPropertyValue('--canvas-line').trim(),
+                nut: style.getPropertyValue('--canvas-nut').trim(),
+                marker: style.getPropertyValue('--canvas-marker').trim(),
+                stringDark: style.getPropertyValue('--canvas-string-dark').trim(),
+                stringLight: style.getPropertyValue('--canvas-string-light').trim(),
+                annBg: style.getPropertyValue('--canvas-ann-bg').trim(),
+                annBorder: style.getPropertyValue('--canvas-ann-border').trim(),
+                annText: style.getPropertyValue('--canvas-ann-text').trim()
+            };
         }
         
         get logicalWidth() { return this._logicalWidth; }
@@ -308,18 +327,8 @@
             
             this.ctx.clearRect(0, 0, this._logicalWidth, this._logicalHeight);
             
-            // 主题颜色
-            const colors = currentTheme === 'dark' ? {
-                bg: '#0d1b2a', text: '#eaeaea', subText: '#888888',
-                line: '#4a5568', nut: '#2d3748', marker: '#4a5568',
-                stringDark: '#555566', stringLight: '#4a4a5a',
-                annBg: '#2d3748', annBorder: '#4a5568', annText: '#eaeaea'
-            } : {
-                bg: '#f9efdc', text: '#3a2a1a', subText: '#8b7a65',
-                line: '#aa8c64', nut: '#7c5a38', marker: '#cfbc8c',
-                stringDark: '#8b7a65', stringLight: '#8b7a65',
-                annBg: '#ffffff', annBorder: '#b0a07c', annText: '#1e2a1a'
-            };
+            // 从 CSS 变量读取 Canvas 颜色（自动响应主题切换）
+            const colors = this._getCanvasColors();
             
             // 背景
             this.ctx.fillStyle = colors.bg;
@@ -467,8 +476,9 @@
                         ann.textColor = interval === 0 ? "#ffffff" : "#2c2c2c";
                     } else {
                         ann.text = curNote;
-                        ann.bgColor = currentTheme === 'dark' ? '#2d3748' : '#e0dcd0';
-                        ann.textColor = currentTheme === 'dark' ? '#888888' : '#5a4a32';
+                        const c = this.renderer._getCanvasColors();
+                        ann.bgColor = c.annBg;
+                        ann.textColor = c.annText;
                     }
                 }
             }
