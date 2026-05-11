@@ -968,8 +968,8 @@
             if (!e.target.files[0]) return;
             const file = e.target.files[0];
 
-            if (window.G.presetMgr) {
-                window.G.presetMgr.importFromFile(file,
+            if (G.presetMgr) {
+                G.presetMgr.importFromFile(file,
                     // 成功回调
                     function(presetName) {
                         // 额外恢复 metro 状态（importData 不覆盖 metro）
@@ -1071,13 +1071,13 @@
 
         // 保存命名预设
         DOM.presetSaveBtn.addEventListener('click', () => {
-            if (!window.G.presetMgr) return;
+            if (!G.presetMgr) return;
             const name = DOM.presetNameInput.value.trim();
             if (!name) {
                 alert(lang.presetNoName || '请填写预设名称');
                 return;
             }
-            const id = window.G.presetMgr.savePreset(name, '');
+            const id = G.presetMgr.savePreset(name, '');
             if (id) {
                 DOM.presetNameInput.value = '';
                 renderPresetList();
@@ -1086,9 +1086,9 @@
 
         // 导出当前为预设文件
         DOM.presetExportBtn.addEventListener('click', () => {
-            if (!window.G.presetMgr) return;
+            if (!G.presetMgr) return;
             const name = DOM.boardTitle.value.trim() || 'guitarfb-preset';
-            window.G.presetMgr.exportCurrentAsPreset(name);
+            G.presetMgr.exportCurrentAsPreset(name);
         });
 
         // 预设名称输入框回车保存
@@ -1102,8 +1102,8 @@
      */
     function renderPresetList() {
         const listEl = DOM.presetList;
-        if (!listEl || !window.G.presetMgr) return;
-        const presets = window.G.presetMgr.listPresets();
+        if (!listEl || !G.presetMgr) return;
+        const presets = G.presetMgr.listPresets();
 
         if (presets.length === 0) {
             listEl.innerHTML = '<div class="preset-empty" data-i18n="presetListEmpty">暂无保存的预设</div>';
@@ -1130,11 +1130,11 @@
             const id = item.dataset.id;
 
             if (btn.dataset.action === 'load') {
-                window.G.presetMgr.loadPreset(id);
+                G.presetMgr.loadPreset(id);
                 renderPresetList();
             } else if (btn.dataset.action === 'delete') {
                 if (confirm(lang.presetConfirmDelete || '确认删除此预设？')) {
-                    window.G.presetMgr.deletePreset(id);
+                    G.presetMgr.deletePreset(id);
                     renderPresetList();
                 }
             }
@@ -1163,11 +1163,11 @@
         metro = new MetronomeController();
         
         // 初始化预设管理器
-        if (window.G.PresetManager) {
-            window.G.presetMgr = new G.PresetManager(controller, DOM);
+        if (G.PresetManager) {
+            G.presetMgr = new G.PresetManager(controller, DOM);
             // 尝试恢复自动保存
-            if (window.G.presetMgr.hasAutoSave()) {
-                window.G.presetMgr.restoreAuto();
+            if (G.presetMgr.hasAutoSave()) {
+                G.presetMgr.restoreAuto();
             }
         }
         
@@ -1188,8 +1188,8 @@
         renderer.draw(controller.getAnnotations(), controller.currentTemplate, DOM.boardTitle.value);
         
         // 绑定自动保存（页面关闭时保存最后状态）
-        if (window.G.presetMgr) {
-            window.addEventListener('beforeunload', () => window.G.presetMgr.saveAuto());
+        if (G.presetMgr) {
+            window.addEventListener('beforeunload', () => G.presetMgr.saveAuto());
         }
     });
 // Expose runtime state for other modules
