@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>GuitarFB · 吉他指板调式音阶与和弦工坊</title>
+    <meta name="description" content="交互式吉他指板工具 — 可视化音阶、和弦与调式，内置节拍器。支持多调音预设、指板标注与导出。">
+    <meta name="keywords" content="吉他指板,吉他音阶,吉他和弦,指板练习,吉他工具,GuitarFB,metronome">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23e8a040' d='M14 6c-1 0-2 .5-2.5 1.5L5 20c-.5 1 0 2 .5 2.5l4 3c.5.5 1.5 1 2.5.5l11-6c.5-.5 1-1 .5-2l-4-10C19 7.5 18 7 17 7l-3-1zm-1 3l3 8.5-8 4.5-3-2.5 5.5-10L13 9zm19 0c-1 0-2 .5-2.5 1.5L24 23c-.5 1 0 2 .5 2.5l4 3c.5.5 1.5 1 2.5.5l11-6c.5-.5 1-1 .5-2l-4-10C38 7.5 37 7 36 7l-3-1zm-1 3l3 8.5-8 4.5-3-2.5 5.5-10L31 12zm-12 9l1 2c.5 1 1.5 1.5 2.5 1l2-.5-1 6c0 1 .5 2 1.5 2.5l9 5c.5.5 1.5 0 2-.5l1-2c.5-1 0-2-.5-2.5l-9-5c-.5-.5-1.5-.5-2.5 0l-5 2-1.5-8z'/%3E%3C/svg%3E">
+    
+    <!-- 字体异步加载优化 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 外部CSS -->
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body data-theme="light">
+<div class="container">
+    <div class="title-bar">
+        <label id="labelBoardTitle" data-i18n="labelBoardTitle">🎸 标题</label>
+        <input type="text" id="boardTitle" value="吉他指板练习" data-i18n-placeholder="boardTitlePlaceholder" placeholder="自动或手动填写">
+        <button id="langToggle" class="lang-toggle">EN</button>
+        <button id="themeToggle" class="theme-toggle">🌙</button>
+        <!-- 预设功能已移除，保留自动保存 -->
+    </div>
+
+    <!-- 多指板容器 -->
+    <div id="fretboardContainer" class="fretboard-container"></div>
+
+    <!-- Mobile-only subdiv row -->
+    <div class="tuning-row tuning-row-subdiv-mobile-only">
+        <div class="metro-group-metronome-subdiv"><span class="metro-label" data-i18n="subdiv">细分</span><div id="beatSubdivDisplayMobile" class="beat-subdiv-display-fixed"></div></div>
+    </div>
+
+    <!-- Regular tuning row -->
+    <div class="tuning-row">
+        <button id="tuningToggle" class="tuning-toggle">
+            <span>🎵</span> <span data-i18n="tuning">调音设置</span> <span class="arrow">▼</span>
+        </button>
+        <div class="metro-group-metronome-subdiv"><span class="metro-label" data-i18n="subdiv">细分</span><div id="beatSubdivDisplay" class="beat-subdiv-display-fixed"></div></div>
+    </div>
+    <div id="tuningPanel" class="tuning-panel">
+        <div class="tuning-preset">
+            <label data-i18n="preset">预设:</label>
+            <select id="tuningPreset">
+                <option value="standard">Standard (EADGBE)</option>
+                <option value="dropD">Drop D (EADGBD)</option>
+                <option value="dropC">Drop C (EADGCD)</option>
+                <option value="openG">Open G (DGDGBD)</option>
+                <option value="openD">Open D (DADF#AD)</option>
+                <option value="dadgad">DADGAD</option>
+                <option value="halfDown">Half Step Down (Eb)</option>
+                <option value="fullDown">Full Step Down (D)</option>
+                <option value="custom">自定义</option>
+            </select>
+        </div>
+        <div class="tuning-group" id="stringTuningControls">
+            <label>1st:</label><select id="string0" data-string="0"><option>E</option><option>E#</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option><option>C</option><option>C#</option><option>D</option><option>D#</option></select>
+            <label>2nd:</label><select id="string1" data-string="1"><option selected>B</option><option>C</option><option>C#</option><option>D</option><option>D#</option><option>E</option><option>E#</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option></select>
+            <label>3rd:</label><select id="string2" data-string="2"><option selected>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option><option>C</option><option>C#</option><option>D</option><option>D#</option><option>E</option><option>E#</option><option>F</option><option>F#</option></select>
+            <div class="tuning-row-break"></div>
+            <label>4th:</label><select id="string3" data-string="3"><option selected>D</option><option>D#</option><option>E</option><option>E#</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option><option>C</option><option>C#</option></select>
+            <label>5th:</label><select id="string4" data-string="4"><option selected>A</option><option>A#</option><option>B</option><option>C</option><option>C#</option><option>D</option><option>D#</option><option>E</option><option>E#</option><option>F</option><option>F#</option><option>G</option><option>G#</option></select>
+            <label>6th:</label><select id="string5" data-string="5"><option selected>E</option><option>E#</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option><option>C</option><option>C#</option><option>D</option><option>D#</option></select>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <div class="param-row">
+            <div class="param-group param-group-tall"><label data-i18n="key">🎼 调性</label><select id="globalKey"><option value="C">C</option><option value="C#">C#</option><option value="D">D</option><option value="D#">D#</option><option value="E">E</option><option value="F">F</option><option value="F#">F#</option><option value="G">G</option><option value="G#">G#</option><option value="A">A</option><option value="A#">A#</option><option value="B">B</option></select></div>
+            <div class="param-group param-group-tall"><label data-i18n="scale">🎵 音阶</label><select id="scaleModeSelect"><option value="major">自然大调</option><option value="dorian">多利亚</option><option value="phrygian">弗里吉亚</option><option value="lydian">利底亚</option><option value="mixolydian">混合利底亚</option><option value="minor">自然小调</option><option value="locrian">洛克里亚</option><option value="harmonic_minor">和声小调</option><option value="melodic_minor">旋律小调</option><option value="pentatonic_major">大调五声</option><option value="pentatonic_minor">小调五声</option><option value="blues">布鲁斯</option><option value="japanese">日本音阶</option><option value="hungarian">匈牙利小调</option></select></div>
+            <div class="param-group param-group-tall"><label data-i18n="chord">🎸 和弦</label><select id="chordFamilySelect"><option value="triad">三和弦</option><option value="seventh">七和弦</option><option value="ninth">九和弦</option><option value="eleventh">十一和弦</option><option value="thirteenth">十三和弦</option></select></div>
+            <div class="param-group param-group-tall"><label data-i18n="degree">🎼 级数</label><select id="chordDegreeSelect"><option value="1">I 级</option><option value="2">II 级</option><option value="3">III 级</option><option value="4">IV 级</option><option value="5">V 级</option><option value="6">VI 级</option><option value="7">VII 级</option></select></div>
+        </div>
+        <div class="btn-group" id="genBtnGroup">
+            <button id="genScaleBtn" class="gen-btn" data-i18n="generateScale">✨ 音阶</button>
+            <button id="genChordBtn" class="gen-btn" data-i18n="generateChord">🎼 和弦</button>
+            <span class="btn-group-sep"></span>
+            <button class="mode-btn active" data-mode="note" data-i18n="modeNote">🎵 音名</button>
+            <button class="mode-btn" data-mode="solfege" data-i18n="modeSolfege">🔢 唱名</button>
+            <button class="mode-btn" data-mode="interval" data-i18n="modeInterval">🎼 音级</button>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <div class="tool-group tool-group-tall annotation-group-wrapper">
+            <div class="annotation-group-desktop">
+                <span class="tool-group-label" data-i18n="annotation">📌 标注</span>
+                <button id="modeManual" class="mode-btn active" data-i18n="manual">✏️ 手动</button>
+                <input type="text" id="labelText" value="●" size="3" class="annotation-text-input">
+                <button id="ModePitch" class="mode-btn" data-i18n="pitch">🎵 音高</button>
+            </div>
+            <div class="annotation-group-mobile">
+                <span class="tool-group-label" data-i18n="annotation">📌 标注</span>
+                <button id="modeManualMobile" class="mode-btn active" data-i18n="manual">✏️ 手动</button>
+                <input type="text" id="labelTextMobile" value="●" size="3" class="small-text-input">
+                <button id="ModePitchMobile" class="mode-btn" data-i18n="pitch">🎵 音高</button>
+            </div>
+        </div>
+        <div class="tool-group tool-group-tall">
+            <span class="tool-group-label">🎨</span>
+            <div class="color-preset"><div class="color-btn" style="background:#ff4444;" data-bg="#ff4444" data-text="#ffffff"></div><div class="color-btn" style="background:#ffffff;" data-bg="#ffffff" data-text="#1e2a1a"></div><div class="color-btn" style="background:#2c2c2c;" data-bg="#2c2c2c" data-text="#ffffff"></div></div>
+            <label class="tool-group-label" data-i18n="circle">圈:</label><input type="color" id="bgColorPicker" value="#ff4444"><label class="tool-group-label" data-i18n="font">字:</label><input type="color" id="textColorPicker" value="#ffffff">
+        </div>
+    </div>
+
+    <div class="export-row">
+        <button id="clearAllBtn" data-i18n="clearAll">🗑️ 清空</button>
+        <button id="fretboardAddBtn" class="btn-secondary" data-i18n="fretboardAdd">➕ 新增指板</button>
+        <button id="exportImage" data-i18n="exportImage">📸 保存</button>
+        <button id="exportAllImage" class="btn-secondary" data-i18n="exportAllImage">📸 保存全部</button>
+        <button id="exportData" data-i18n="exportData">💾 JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none"><button id="importBtn" data-i18n="importData">📂 导入</button>
+    </div>
+
+    <div class="metronome-panel">
+        <div class="metro-group"><span class="metro-label" data-i18n="bpm">BPM</span><input type="range" id="bpmSlider" min="30" max="240" value="90"><div id="bpmDisplay" class="bpm-value">90</div></div>
+        <div class="metro-group"><span class="metro-label" data-i18n="beat">拍号</span><button id="beatDown" class="metro-btn">-</button><span id="beatPerBar" style="min-width:28px;text-align:center;">4</span><button id="beatUp" class="metro-btn">+</button></div>
+        <div class="metro-group"><span class="metro-label" data-i18n="rhythm">节奏</span><select id="rhythmSelect"><option value="1">四分音符</option><option value="2">八分音符</option><option value="4">十六分音符</option><option value="3">三连音</option><option value="6">六连音</option></select></div>
+        <div class="metro-group"><span class="metro-label" data-i18n="accent">重音</span><div id="accentToggle" class="toggle-switch active"></div></div>
+        <div class="metro-group"><span class="metro-label" data-i18n="timer">定时</span><input type="number" id="timerMinutes" value="1" min="1" class="metro-timer-input"><div id="timerToggle" class="toggle-switch"></div></div>
+        <div class="metro-group"><div id="metroStartStop" class="metro-btn" data-i18n="start">▶ 启动</div><div id="countdownDisplay" class="countdown-timer">--:--</div><button id="metroTap" class="metro-btn" title="Tap Tempo">👆</button></div>
+    </div>
+</div>
+
+<!-- 页脚链接 -->
+<footer class="site-footer">
+    <a href="about.html" data-i18n="about">关于我们</a>
+    <span class="divider">|</span>
+    <a href="privacy.html" data-i18n="privacy">隐私政策</a>
+</footer>
+
+<!-- JS使用defer属性 - 按依赖顺序加载 -->
+<script defer src="./scripts/data.js"></script>
+<script defer src="./scripts/preset.js"></script>
+<script defer src="./scripts/fretboard-manager.js"></script>
+<script defer src="./scripts/metronome.js"></script>
+<script defer src="./scripts/main.js"></script>
+</body>
+</html>

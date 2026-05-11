@@ -1,0 +1,352 @@
+/**
+ * GuitarFB - 多指板管理模块
+ * Version: 2.0.0
+ * 
+ * 支持多个指板垂直堆叠显示，每个指板独立配置。
+ * 点击指板激活，参数面板控制当前激活指板。
+ */
+(function(G) {
+    'use strict';
+
+    const STORAGE_KEY = 'guitarfb_fretboards';
+
+    /** 生成短 ID */
+    function uid() {
+        return Math.random().toString(36).slice(2, 10);
+    }
+
+    class FretboardManager {
+        /**
+         * @param {HTMLElement} container - 指板容器 DOM 元素
+         * @param {Object} callbacks
+         *   onSwitch(fb) - 切换指板时调用
+         *   onCanvasCreated(canvas, fb) - 新建 canvas 后调用，用于绑定事件
+         */
+        constructor(container, callbacks) {
+            this.container = container;
+            this.callbacks = callbacks || {};
+            this.list = [];       // [{ id, canvas, renderer, controller, name, tuning, key, scale, chord, degree }]
+            this.activeIdx = -1;
+        }
+
+        /**
+         * 新建一个指板，叠放在右上角
+         * @param {Object} options
+         * @returns {Object} fretboardData
+         */
+        add(options) {
+            options = options || {};
+            var id = uid();
+            var canvas = document.createElement('canvas');
+            canvas.className = 'fretboard-canvas';
+            canvas.width = 1620;
+            canvas.height = 540;
+            canvas.dataset.fbid = id;
+
+            // 每个指板包一个 relative 容器，用于定位指示灯
+            var wrapper = document.createElement('div');
+            wrapper.className = 'fretboard-wrapper';
+
+            var renderer = new G.FretboardRenderer(canvas);
+            var controller = new G.FretboardController(renderer);
+
+            var fb = {
+                id: id,
+                canvas: canvas,
+                renderer: renderer,
+                controller: controller,
+                name: options.name || '',
+                tuning: options.tuning || JSON.parse(JSON.stringify(G.TUNING_CONFIG)),
+                key: options.key || 'C',
+                scale: options.scale || 'major',
+                chord: options.chord || 'triad',
+                degree: options.degree || '1',
+                boardTitle: options.boardTitle || ''
+            };
+
+            this.list.push(fb);
+
+            // 初始绘制
+            renderer.draw([], { type: null }, fb.boardTitle || ('指板 ' + this.list.length));
+
+            // 组装：wrapper → canvas + dot
+            wrapper.appendChild(canvas);
+            // 删除按钮
+            var del = document.createElement('button');
+            del.className = 'fretboard-del';
+            del.textContent = '✕';
+            del.title = '删除此指板';
+            (function(mgr, fid, d) {
+                d.addEventListener('click', function(e) { e.stopPropagation(); mgr.remove(fid); });
+            })(this, fb.id, del);
+            wrapper.appendChild(del);
+            // wrapper 整体点击激活
+            (function(mgr, fid) {
+                wrapper.addEventListener('click', function() { mgr.activate(fid); });
+            })(this, fb.id);
+            this.container.appendChild(wrapper);
+            fb._wrapper = wrapper;
+
+            if (this.callbacks.onCanvasCreated) this.callbacks.onCanvasCreated(canvas, fb);
+
+            return fb;
+        }
+
+        /**
+         * 激活指定指板（更新全局 renderer / controller 引用 + 重绘）
+         */
+        activate(idOrIdx) {
+            var idx = typeof idOrIdx === 'number' ? idOrIdx
+                : this.list.findIndex(function(f) { return f.id === idOrIdx; });
+            if (idx < 0 || idx === this.activeIdx) { console.log('[FM] activate SKIP ' + idx + ' == ' + this.activeIdx); return; }
+            console.log('[FM] activate ' + this.activeIdx + ' → ' + idx);
+
+            // 保存当前指板状态
+            var old = this.getActive();
+            if (old) this._saveState(old);
+
+            this.activeIdx = idx;
+            var fb = this.list[idx];
+
+            // 恢复目标指板状态
+            this._loadState(fb);
+
+            // 重绘
+            fb.renderer.draw(fb.controller.getAnnotations(), fb.controller.currentTemplate, fb.boardTitle || '指板 ' + (idx + 1));
+
+            // 高亮当前指板（边框）
+            this.list.forEach(function(f, i) {
+                f.canvas.classList.toggle('fretboard-active', i === idx);
+            });
+
+            if (this.callbacks.onSwitch) this.callbacks.onSwitch(fb);
+        }
+
+        /** 获取当前激活指板 */
+        getActive() {
+            return this.list[this.activeIdx] || null;
+        }
+
+        /** 获取全部指板 */
+        getAll() {
+            return this.list;
+        }
+
+        /** 获取数量 */
+        count() { return this.list.length; }
+
+        /**
+         * 删除指定指板（至少保留 1 个）
+         */
+        remove(idOrIdx) {
+            if (this.list.length <= 1) return false;
+            const idx = typeof idOrIdx === 'number' ? idOrIdx
+                : this.list.findIndex(f => f.id === idOrIdx);
+            if (idx < 0) return false;
+
+            var fb = this.list[idx];
+            if (fb._wrapper) fb._wrapper.remove();
+            else fb.canvas.remove();
+            this.list.splice(idx, 1);
+
+            // 如果删的是激活的或之前的，调整 activeIdx
+            if (idx <= this.activeIdx) this.activeIdx = Math.max(0, this.activeIdx - 1);
+
+            // 激活新的当前指板
+            this.activate(this.activeIdx);
+            return true;
+        }
+
+        /**
+         * 清空所有指板（重置为 1 个初始指板）
+         */
+        resetAll() {
+            this.list.forEach(function(fb) { if (fb._wrapper) fb._wrapper.remove(); else fb.canvas.remove(); });
+            this.list = [];
+            this.activeIdx = -1;
+            this.add({ name: '指板 1' });
+            this.activate(0);
+        }
+
+        // ——— 内部: 保存/恢复指板状态到 controller ———
+
+        _saveState(fb) {
+            var D = G.DOM;
+            fb.tuning = JSON.parse(JSON.stringify(G.TUNING_CONFIG));
+            fb.annotations = fb.controller.annotations.slice();
+            fb.template = fb.controller.currentTemplate ? { ...fb.controller.currentTemplate } : null;
+            fb.boardTitle = D ? D.boardTitle.value : '';
+        }
+
+        _loadState(fb) {
+            var D = G.DOM;
+            if (!D) return;
+            // 恢复调音
+            Object.assign(G.TUNING_CONFIG, fb.tuning);
+            // 恢复标注和模板
+            fb.controller.annotations = fb.annotations ? fb.annotations.slice() : [];
+            fb.controller.currentTemplate = fb.template ? { ...fb.template } : { type: null };
+            // 更新 DOM 参数面板
+            D.globalKey.value = fb.key || 'C';
+            D.scaleMode.value = fb.scale || 'major';
+            D.chordFamily.value = fb.chord || 'triad';
+            D.chordDegree.value = fb.degree || '1';
+            D.boardTitle.value = fb.boardTitle || (G.currentLang === 'zh' ? '吉他指板练习' : 'Guitar Fretboard');
+        }
+
+        // ——— 导出/恢复全部 ———
+
+        exportAll() {
+            // 先保存当前激活指板
+            this._saveState(this.getActive());
+            var D = G.DOM;
+            return {
+                version: '2.1',
+                activeIdx: this.activeIdx,
+                theme: document.body.getAttribute('data-theme') || 'light',
+                lang: G.currentLang || 'zh',
+                annotationMode: G.annotationMode || 'note',
+                bpm: D ? parseInt(D.bpmSlider.value) || 90 : 90,
+                beatPerBar: D ? parseInt(D.beatPerBar.textContent) || 4 : 4,
+                rhythmDiv: D ? parseInt(D.rhythmSelect.value) || 1 : 1,
+                accent: D ? D.accentToggle.classList.contains('active') : true,
+                timerActive: D ? D.timerToggle.classList.contains('active') : false,
+                timerMinutes: D ? parseInt(D.timerMinutes.value) || 1 : 1,
+                fretboards: this.list.map(fb => ({
+                    id: fb.id,
+                    name: fb.name,
+                    tuning: JSON.parse(JSON.stringify(fb.tuning)),
+                    annotations: fb.controller.annotations,
+                    template: fb.controller.currentTemplate,
+                    boardTitle: fb.boardTitle || (G.DOM ? G.DOM.boardTitle.value : ''),
+                    key: fb.key,
+                    scale: fb.scale,
+                    chord: fb.chord,
+                    degree: fb.degree
+                }))
+            };
+        }
+
+        importAll(data) {
+            if (!data || !data.fretboards || !data.fretboards.length) { console.warn('[FM] importAll: 无有效数据'); return false; }
+            console.log('[FM] importAll: ' + data.fretboards.length + ' 个指板, annotationMode=' + data.annotationMode);
+            this.list.forEach(fb => fb.canvas.remove());
+            this.list = [];
+            this.activeIdx = -1;
+
+            data.fretboards.forEach((s, i) => {
+                const fb = this.add({
+                    name: s.name || ('指板 ' + (i + 1)),
+                    key: s.key || 'C',
+                    scale: s.scale || 'major',
+                    chord: s.chord || 'triad',
+                    degree: s.degree || '1',
+                    boardTitle: s.boardTitle || ''
+                });
+                // 同时写 fb.annotations（供 _loadState）和 controller（供立即绘制）
+                if (s.annotations) {
+                    fb.annotations = s.annotations;
+                    fb.controller.annotations = s.annotations;
+                }
+                if (s.template) {
+                    fb.template = s.template;
+                    fb.controller.currentTemplate = s.template;
+                }
+                if (s.tuning) fb.tuning = s.tuning;
+            });
+
+            // 恢复主题
+            if (data.theme) {
+                document.body.setAttribute('data-theme', data.theme);
+                G.currentTheme = data.theme;
+                var D = G.DOM;
+                if (D && D.themeToggle) {
+                    D.themeToggle.innerHTML = data.theme === 'light' ? '🌙' : '☀️';
+                }
+            }
+
+            // 恢复语言
+            if (data.lang && data.lang !== G.currentLang) {
+                G.currentLang = data.lang;
+                var D2 = G.DOM;
+                if (D2 && D2.langToggle) {
+                    D2.langToggle.innerText = data.lang === 'zh' ? 'EN' : '中文';
+                }
+            }
+
+            // 恢复标注模式
+            if (data.annotationMode && data.annotationMode !== G.annotationMode) {
+                G.annotationMode = data.annotationMode;
+            }
+
+            const targetIdx = (typeof data.activeIdx === 'number' && data.activeIdx < this.list.length)
+                ? data.activeIdx : 0;
+
+            // 恢复节拍器状态
+            var mt = G.metro;
+            if (mt && mt.setBpm) {
+                if (data.bpm) mt.setBpm(data.bpm);
+                if (data.beatPerBar) mt.setBeatPerBar(data.beatPerBar);
+                if (data.rhythmDiv) mt.setRhythmDiv(data.rhythmDiv);
+                if (data.accent !== undefined) {
+                    mt.accent = data.accent;
+                    var dd = G.DOM;
+                    if (dd && dd.accentToggle) dd.accentToggle.classList.toggle('active', data.accent);
+                }
+                if (data.timerActive !== undefined) {
+                    mt.timerActive = data.timerActive;
+                    var dd2 = G.DOM;
+                    if (dd2 && dd2.timerToggle) dd2.timerToggle.classList.toggle('active', data.timerActive);
+                }
+                if (data.timerMinutes) {
+                    var dd3 = G.DOM;
+                    if (dd3 && dd3.timerMinutes) dd3.timerMinutes.value = data.timerMinutes;
+                }
+            }
+
+            // 重绘所有指板（不只有激活的）
+            this.list.forEach(function(f) {
+                f.renderer.draw(f.controller.getAnnotations(), f.controller.currentTemplate, f.boardTitle || '');
+            });
+
+            this.activate(targetIdx);
+            return true;
+        }
+
+        /**
+         * 合并导出全部指板为一张图（纵向拼接）
+         */
+        exportAllAsCanvas() {
+            var padding = 20;
+            var h = padding;
+            this.list.forEach(function() { h += 540 + padding; });
+            var cvs = document.createElement('canvas');
+            cvs.width = 1620;
+            cvs.height = h;
+            var ctx = cvs.getContext('2d');
+
+            // 使用当前主题的 Canvas 背景色
+            var bgColor = getComputedStyle(document.body).getPropertyValue('--canvas-bg').trim() || '#f9f2dc';
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+            var y = padding;
+            this.list.forEach(function(fb, i) {
+                var title = fb.boardTitle || ('指板 ' + (i + 1));
+                // 用原始 renderer 画到自己的 canvas 上（采用当前主题色）
+                fb.renderer.draw(fb.controller.getAnnotations(), fb.controller.currentTemplate, title);
+
+                // 从原始 canvas 复制（用 buffer 全尺寸源 → 缩放到逻辑尺寸目标）
+                var lw = fb.renderer._logicalWidth || 1620;
+                var lh = fb.renderer._logicalHeight || 540;
+                ctx.drawImage(fb.canvas, 0, 0, fb.canvas.width, fb.canvas.height, 0, y, lw, lh);
+                y += lh + padding;
+            });
+
+            return cvs;
+        }
+    }
+
+    G.FretboardManager = FretboardManager;
+
+})(window.GuitarFB = window.GuitarFB || {});
