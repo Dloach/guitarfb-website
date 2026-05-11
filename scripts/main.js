@@ -733,6 +733,47 @@
         });
     }
 
+    function resetAll() {
+        // 1. 停止节拍器
+        if (metro && metro.active) metro.stop();
+
+        // 2. 清空指板
+        controller.clearAll();
+
+        // 3. 重置调音为标准调音
+        applyPresetTuning('standard');
+
+        // 4. 重置参数面板
+        DOM.globalKey.value = 'C';
+        DOM.scaleMode.value = 'major';
+        DOM.chordFamily.value = 'triad';
+        DOM.chordDegree.value = '1';
+        updateChordDegreeOptions();
+
+        // 5. 重置标题
+        DOM.boardTitle.value = currentLang === 'zh' ? '吉他指板练习' : 'Guitar Fretboard';
+
+        // 6. 重置节拍器
+        metro.setBpm(90);
+        metro.setBeatPerBar(4);
+        metro.setRhythmDiv(1);
+        metro.accent = true;
+        DOM.accentToggle.classList.add('active');
+        metro.timerActive = false;
+        DOM.timerToggle.classList.remove('active');
+        DOM.timerMinutes.value = 1;
+        updateBeatSubdivDisplay();
+
+        // 7. 重置主题为浅色
+        if (currentTheme !== 'light') toggleTheme();
+
+        // 8. 清除自动保存
+        if (G.autoSave) G.autoSave.clear();
+
+        // 9. 重新绘制
+        renderer.draw(controller.getAnnotations(), controller.currentTemplate, DOM.boardTitle.value);
+    }
+
     // ============================================
     // 事件绑定 - 使用事件委托优化
     // ============================================
@@ -785,7 +826,7 @@
         });
         
         // 清空按钮
-        DOM.clearAllBtn.addEventListener('click', () => controller.clearAll());
+        DOM.clearAllBtn.addEventListener('click', resetAll);
         
         // 音阶变化更新级数选项
         DOM.scaleMode.addEventListener('change', updateChordDegreeOptions);
