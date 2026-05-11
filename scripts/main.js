@@ -269,7 +269,7 @@
         
         // 从 CSS 变量读取 Canvas 颜色（自动响应主题切换）
         _getCanvasColors() {
-            const style = getComputedStyle(document.documentElement);
+            const style = getComputedStyle(document.body);
             return {
                 bg: style.getPropertyValue('--canvas-bg').trim(),
                 text: style.getPropertyValue('--canvas-text').trim(),
@@ -379,19 +379,19 @@
                 this.ctx.stroke();
             }
             
-            // 品位标记
+            // 品位标记（半径 12px，比原版增大 70%）
             this.ctx.fillStyle = colors.marker;
             for(let f of [3,5,7,9,12]) {
                 if(f > this.fretCount) continue;
                 const cx = startX + (f-0.5)*fretStep;
                 if(f === 12) {
                     this.ctx.beginPath();
-                    this.ctx.arc(cx - 14, this.getStringY(2.5), 7, 0, Math.PI*2);
-                    this.ctx.arc(cx + 14, this.getStringY(2.5), 7, 0, Math.PI*2);
+                    this.ctx.arc(cx - 20, this.getStringY(2.5), 12, 0, Math.PI*2);
+                    this.ctx.arc(cx + 20, this.getStringY(2.5), 12, 0, Math.PI*2);
                     this.ctx.fill();
                 } else {
                     this.ctx.beginPath();
-                    this.ctx.arc(cx, this.getStringY(2.5), 7, 0, Math.PI*2);
+                    this.ctx.arc(cx, this.getStringY(2.5), 12, 0, Math.PI*2);
                     this.ctx.fill();
                 }
             }
