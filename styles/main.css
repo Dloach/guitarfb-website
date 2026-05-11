@@ -105,50 +105,50 @@
     --canvas-ann-text: #1e2a1a;
 }
 
-/* 深色主题 - 统一暖色系（与浅色主题同色相方向） */
+/* 深色主题 - 冷暗蓝调 */
 [data-theme="dark"] {
-    --color-bg-body: #1c1a16;
-    --color-bg-container: #2a2620;
-    --color-bg-title: #322d26;
-    --color-bg-panel: #352f28;
-    --color-bg-group: #2e2922;
-    --color-bg-tool: #3a342c;
-    --color-bg-metro: #221e18;
-    --color-bg-metro-group: #2a251e;
-    --color-bg-canvas: #2c2821;
-    --color-bg-input: rgba(40, 35, 30, 0.9);
+    --color-bg-body: #1a1a2e;
+    --color-bg-container: #16213e;
+    --color-bg-title: #0f3460;
+    --color-bg-panel: #0d1b2a;
+    --color-bg-group: #16213e;
+    --color-bg-tool: #0f3460;
+    --color-bg-metro: #1a1a2e;
+    --color-bg-metro-group: #1b263b;
+    --color-bg-canvas: #0d1b2a;
+    --color-bg-input: rgba(30, 40, 60, 0.9);
     --color-bg-input-dark: rgba(0, 0, 0, 0.3);
     
-    --color-text-primary: #d4cdc0;
-    --color-text-secondary: #a09888;
-    --color-text-metro: #ccc5b8;
-    --color-text-bpm: #e8a030;
-    --color-text-countdown: #e08820;
+    --color-text-primary: #eaeaea;
+    --color-text-secondary: #a0a0a0;
+    --color-text-metro: #e0e0e0;
+    --color-text-bpm: #ffd93d;
+    --color-text-countdown: #ff9f43;
     
-    --color-btn-primary: #3d5a30;
-    --color-btn-secondary: #5a4c3e;
-    --color-btn-secondary-active: #3d3428;
-    --color-btn-danger: #c0392b;
+    --color-btn-primary: #4a69bd;
+    --color-btn-secondary: #5c6bc0;
+    --color-btn-secondary-active: #3949ab;
+    --color-btn-danger: #e53935;
     
-    --color-border: #4a4038;
-    --color-border-dark: #3a322a;
-    --color-toggle-off: #4a4038;
-    --color-toggle-on: #e8a030;
-    --color-beat-off: #3a342c;
-    --color-beat-on: #e8a030;
+    --color-border: #424242;
+    --color-border-dark: #37474f;
+    --color-toggle-off: #455a64;
+    --color-toggle-on: #ff9800;
+    --color-beat-off: #455a64;
+    --color-beat-on: #ff9800;
     
     /* Canvas 绘制颜色 — 深色主题 */
-    --canvas-bg: #2c2821;
-    --canvas-text: #d4cdc0;
-    --canvas-subtext: #a09888;
-    --canvas-line: #6a5e50;
-    --canvas-nut: #4a3f35;
-    --canvas-marker: #6a5e50;
-    --canvas-string-dark: #7a6e5e;
-    --canvas-string-light: #6a6052;
-    --canvas-ann-bg: #4a3f35;
-    --canvas-ann-border: #6a5e50;
-    --canvas-ann-text: #d4cdc0;
+    --canvas-bg: #0d1b2a;
+    --canvas-text: #eaeaea;
+    --canvas-subtext: #888888;
+    --canvas-line: #4a5568;
+    --canvas-nut: #2d3748;
+    --canvas-marker: #4a5568;
+    --canvas-string-dark: #555566;
+    --canvas-string-light: #4a4a5a;
+    --canvas-ann-bg: #2d3748;
+    --canvas-ann-border: #4a5568;
+    --canvas-ann-text: #eaeaea;
 }
 
 /* ============================================
@@ -677,7 +677,7 @@ input[type="range"] { width: 140px; }
     transition: background 0.3s ease;
 }
 
-.metro-btn.metro-btn-active { background: var(--color-btn-secondary-active); }
+.metro-btn.metro-btn-active { background: var(--color-btn-danger); }
 
 /* ============================================
    开关组件
