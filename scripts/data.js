@@ -38,7 +38,15 @@
             scales: { major:"自然大调", dorian:"多利亚", phrygian:"弗里吉亚", lydian:"利底亚", mixolydian:"混合利底亚", minor:"自然小调", locrian:"洛克里亚", harmonic_minor:"和声小调", melodic_minor:"旋律小调", pentatonic_major:"大调五声", pentatonic_minor:"小调五声", blues:"布鲁斯", japanese:"日本音阶", hungarian:"匈牙利小调" },
             chords: { triad:"三和弦", seventh:"七和弦", ninth:"九和弦", eleventh:"十一和弦", thirteenth:"十三和弦" },
             rhythms: { "1":"四分音符", "2":"八分音符", "4":"十六分音符", "3":"三连音", "6":"六连音" },
-            about:"关于我们", privacy:"隐私政策"
+            about:"关于我们", privacy:"隐私政策",
+            presetSave:"💾 保存预设", presetLoad:"📂 载入预设", presetDelete:"🗑️ 删除",
+            presetName:"预设名称", presetDesc:"预设描述（可选）",
+            presetSaved:"预设已保存", presetLoaded:"预设已载入",
+            presetDeleted:"预设已删除", presetImportSuccess:"预设导入成功",
+            presetImportError:"预设导入失败", presetExportTitle:"导出预设",
+            presetAutoSave:"自动保存已恢复", presetNoName:"请填写预设名称",
+            presetConfirmDelete:"确认删除此预设？",
+            presetListEmpty:"暂无保存的预设"
         },
         en: {
             title:"Guitar Fretboard · Scale & Chord Workshop", boardTitle:"Guitar Fretboard", boardTitlePlaceholder:"Auto or manual input",
@@ -52,7 +60,15 @@
             scales: { major:"Major", dorian:"Dorian", phrygian:"Phrygian", lydian:"Lydian", mixolydian:"Mixolydian", minor:"Minor", locrian:"Locrian", harmonic_minor:"Harmonic Minor", melodic_minor:"Melodic Minor", pentatonic_major:"Major Pentatonic", pentatonic_minor:"Minor Pentatonic", blues:"Blues", japanese:"Japanese", hungarian:"Hungarian Minor" },
             chords: { triad:"Triad", seventh:"7th", ninth:"9th", eleventh:"11th", thirteenth:"13th" },
             rhythms: { "1":"Quarter", "2":"Eighth", "4":"Sixteenth", "3":"Triplet", "6":"Sextuplet" },
-            about:"About Us", privacy:"Privacy Policy"
+            about:"About Us", privacy:"Privacy Policy",
+            presetSave:"💾 Save Preset", presetLoad:"📂 Load Preset", presetDelete:"🗑️ Delete",
+            presetName:"Preset Name", presetDesc:"Description (optional)",
+            presetSaved:"Preset saved", presetLoaded:"Preset loaded",
+            presetDeleted:"Preset deleted", presetImportSuccess:"Preset imported successfully",
+            presetImportError:"Preset import failed", presetExportTitle:"Export Preset",
+            presetAutoSave:"Auto-save restored", presetNoName:"Please enter a preset name",
+            presetConfirmDelete:"Delete this preset?",
+            presetListEmpty:"No saved presets"
         }
     };
 

@@ -74,6 +74,15 @@
         DOM.importBtn = document.getElementById('importBtn');
         DOM.importFile = document.getElementById('importFile');
         
+        // 预设
+        DOM.presetToggle = document.getElementById('presetToggle');
+        DOM.presetPanel = document.getElementById('presetPanel');
+        DOM.presetPanelClose = document.getElementById('presetPanelClose');
+        DOM.presetNameInput = document.getElementById('presetNameInput');
+        DOM.presetSaveBtn = document.getElementById('presetSaveBtn');
+        DOM.presetExportBtn = document.getElementById('presetExportBtn');
+        DOM.presetList = document.getElementById('presetList');
+        
         // 节拍器
         DOM.bpmSlider = document.getElementById('bpmSlider');
         DOM.bpmDisplay = document.getElementById('bpmDisplay');
@@ -954,31 +963,61 @@
                     break;
             }
         });
+        // 🔒 安全导入（通过 PresetManager 的校验层）
         DOM.importFile.onchange = (e) => {
-            if(e.target.files[0]) {
-                let reader = new FileReader();
-                reader.onload = (ev) => {
+            if (!e.target.files[0]) return;
+            const file = e.target.files[0];
+
+            if (window.G.presetMgr) {
+                window.G.presetMgr.importFromFile(file,
+                    // 成功回调
+                    function(presetName) {
+                        // 额外恢复 metro 状态（importData 不覆盖 metro）
+                        try {
+                            const reader2 = new FileReader();
+                            reader2.onload = function(ev2) {
+                                try {
+                                    const d = JSON.parse(ev2.target.result);
+                                    const s = d.state || d;
+                                    if (s.bpm) metro.setBpm(s.bpm);
+                                    if (s.beatPerBar) metro.setBeatPerBar(s.beatPerBar);
+                                    if (s.rhythmDiv) metro.setRhythmDiv(s.rhythmDiv);
+                                    if (s.accent !== undefined) { metro.accent = s.accent; DOM.accentToggle.classList.toggle('active', s.accent); }
+                                    if (s.timerActive !== undefined) { metro.timerActive = s.timerActive; DOM.timerToggle.classList.toggle('active', s.timerActive); }
+                                    if (s.timerMinutes) DOM.timerMinutes.value = s.timerMinutes;
+                                    updateBeatSubdivDisplay();
+                                } catch(ex) { /* metro restore best-effort */ }
+                            };
+                            reader2.readAsText(file);
+                        } catch(ex) { /* ignore */ }
+                    },
+                    // 失败回调
+                    function(errorMsg) {
+                        alert((lang.presetImportError || '导入失败') + '：' + errorMsg);
+                    }
+                );
+            } else {
+                // 降级：基本 JSON 解析（preset.js 未加载的罕见情况）
+                var reader = new FileReader();
+                reader.onload = function(ev) {
                     try {
-                        let raw = ev.target.result;
-                        let d = JSON.parse(raw);
-                        controller.importData(d);
-                        if(d.bpm) metro.setBpm(d.bpm);
-                        if(d.beatPerBar) metro.setBeatPerBar(d.beatPerBar);
-                        if(d.rhythmDiv) metro.setRhythmDiv(d.rhythmDiv);
-                        if(d.accent !== undefined) { metro.accent = d.accent; DOM.accentToggle.classList.toggle('active', d.accent); }
-                        if(d.timerActive !== undefined) { metro.timerActive = d.timerActive; DOM.timerToggle.classList.toggle('active', d.timerActive); }
-                        if(d.timerMinutes) DOM.timerMinutes.value = d.timerMinutes;
+                        var d = JSON.parse(ev.target.result);
+                        var s = d.state || d;
+                        controller.importData(s);
+                        if (s.bpm) metro.setBpm(s.bpm);
+                        if (s.beatPerBar) metro.setBeatPerBar(s.beatPerBar);
+                        if (s.rhythmDiv) metro.setRhythmDiv(s.rhythmDiv);
+                        if (s.accent !== undefined) { metro.accent = s.accent; DOM.accentToggle.classList.toggle('active', s.accent); }
+                        if (s.timerActive !== undefined) { metro.timerActive = s.timerActive; DOM.timerToggle.classList.toggle('active', s.timerActive); }
+                        if (s.timerMinutes) DOM.timerMinutes.value = s.timerMinutes;
+                        updateBeatSubdivDisplay();
+                        renderer.draw(controller.getAnnotations(), controller.currentTemplate, DOM.boardTitle.value);
                     } catch(ex) {
-                        if(ex instanceof SyntaxError) {
-                            alert('文件不是有效的 JSON 格式：' + ex.message);
-                        } else {
-                            alert('导入执行失败：' + ex.message);
-                            console.error('Import error:', ex);
-                        }
+                        alert('导入失败：' + ex.message);
                     }
                 };
                 reader.onerror = function() { alert('无法读取文件'); };
-                reader.readAsText(e.target.files[0]);
+                reader.readAsText(file);
             }
         };
         
@@ -1011,6 +1050,104 @@
                 metro.setBpm(metro.bpm - 1);
             }
         });
+
+        // ============================================
+        // 预设系统事件
+        // ============================================
+
+        // 预设面板切换
+        DOM.presetToggle.addEventListener('click', () => {
+            const panel = DOM.presetPanel;
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                renderPresetList();
+            } else {
+                panel.style.display = 'none';
+            }
+        });
+        DOM.presetPanelClose.addEventListener('click', () => {
+            DOM.presetPanel.style.display = 'none';
+        });
+
+        // 保存命名预设
+        DOM.presetSaveBtn.addEventListener('click', () => {
+            if (!window.G.presetMgr) return;
+            const name = DOM.presetNameInput.value.trim();
+            if (!name) {
+                alert(lang.presetNoName || '请填写预设名称');
+                return;
+            }
+            const id = window.G.presetMgr.savePreset(name, '');
+            if (id) {
+                DOM.presetNameInput.value = '';
+                renderPresetList();
+            }
+        });
+
+        // 导出当前为预设文件
+        DOM.presetExportBtn.addEventListener('click', () => {
+            if (!window.G.presetMgr) return;
+            const name = DOM.boardTitle.value.trim() || 'guitarfb-preset';
+            window.G.presetMgr.exportCurrentAsPreset(name);
+        });
+
+        // 预设名称输入框回车保存
+        DOM.presetNameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') DOM.presetSaveBtn.click();
+        });
+    }
+
+    /**
+     * 渲染预设列表
+     */
+    function renderPresetList() {
+        const listEl = DOM.presetList;
+        if (!listEl || !window.G.presetMgr) return;
+        const presets = window.G.presetMgr.listPresets();
+
+        if (presets.length === 0) {
+            listEl.innerHTML = '<div class="preset-empty" data-i18n="presetListEmpty">暂无保存的预设</div>';
+            return;
+        }
+
+        listEl.innerHTML = presets.map(p => {
+            const date = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : '';
+            const name = p.name || '未命名';
+            return '<div class="preset-item" data-id="' + p.id + '">' +
+                '<span class="preset-item-name">' + escapeHtml(name) + '</span>' +
+                '<span class="preset-item-date">' + date + '</span>' +
+                '<button class="preset-item-load" data-action="load">▶</button>' +
+                '<button class="preset-item-delete" data-action="delete">✕</button>' +
+                '</div>';
+        }).join('');
+
+        // 事件委托：载入 / 删除
+        listEl.addEventListener('click', function(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const item = btn.closest('.preset-item');
+            if (!item) return;
+            const id = item.dataset.id;
+
+            if (btn.dataset.action === 'load') {
+                window.G.presetMgr.loadPreset(id);
+                renderPresetList();
+            } else if (btn.dataset.action === 'delete') {
+                if (confirm(lang.presetConfirmDelete || '确认删除此预设？')) {
+                    window.G.presetMgr.deletePreset(id);
+                    renderPresetList();
+                }
+            }
+        });
+    }
+
+    /**
+     * HTML 转义工具
+     */
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
     }
 
     // ============================================
@@ -1024,6 +1161,15 @@
         renderer = new FretboardRenderer(DOM.canvas);
         controller = new FretboardController(renderer);
         metro = new MetronomeController();
+        
+        // 初始化预设管理器
+        if (window.G.PresetManager) {
+            window.G.presetMgr = new G.PresetManager(controller, DOM);
+            // 尝试恢复自动保存
+            if (window.G.presetMgr.hasAutoSave()) {
+                window.G.presetMgr.restoreAuto();
+            }
+        }
         
         // 绑定事件
         bindEvents();
@@ -1040,6 +1186,11 @@
         
         // 初始绘制
         renderer.draw(controller.getAnnotations(), controller.currentTemplate, DOM.boardTitle.value);
+        
+        // 绑定自动保存（页面关闭时保存最后状态）
+        if (window.G.presetMgr) {
+            window.addEventListener('beforeunload', () => window.G.presetMgr.saveAuto());
+        }
     });
 // Expose runtime state for other modules
     G.DOM = DOM;
