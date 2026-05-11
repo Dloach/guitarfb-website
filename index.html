@@ -23,7 +23,7 @@
         <input type="text" id="boardTitle" value="吉他指板练习" data-i18n-placeholder="boardTitlePlaceholder" placeholder="自动或手动填写">
         <button id="langToggle" class="lang-toggle">EN</button>
         <button id="themeToggle" class="theme-toggle">🌙</button>
-        <button id="presetToggle" class="preset-toggle" data-i18n="preset">📦 预设</button>
+        <!-- 预设功能已移除，保留自动保存 -->
     </div>
     <canvas id="guitarCanvas" width="1620" height="540" style="width:100%; height:auto; aspect-ratio:1620/540"></canvas>
 
@@ -107,26 +107,6 @@
         <button id="exportImage" data-i18n="exportImage">📸 保存</button>
         <button id="exportData" data-i18n="exportData">💾 JSON</button>
         <input type="file" id="importFile" accept=".json" style="display:none"><button id="importBtn" data-i18n="importData">📂 导入</button>
-        <button id="presetExportBtn" data-i18n="presetSave">💾 保存预设</button>
-    </div>
-
-    <!-- 预设面板 -->
-    <div id="presetPanel" class="preset-panel" style="display:none;">
-        <div class="preset-panel-header">
-            <span data-i18n="preset">📦 预设</span>
-            <button id="presetPanelClose" class="preset-close-btn">✕</button>
-        </div>
-        <div class="preset-panel-body">
-            <!-- 保存新预设 -->
-            <div class="preset-save-row">
-                <input type="text" id="presetNameInput" data-i18n-placeholder="presetName" placeholder="预设名称" maxlength="50">
-                <button id="presetSaveBtn" data-i18n="presetSave">💾 保存</button>
-            </div>
-            <!-- 预设列表 -->
-            <div id="presetList" class="preset-list">
-                <div class="preset-empty" data-i18n="presetListEmpty">暂无保存的预设</div>
-            </div>
-        </div>
     </div>
 
     <div class="metronome-panel">
