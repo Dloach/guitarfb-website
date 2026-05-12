@@ -176,8 +176,9 @@
         // 使用data-i18n自动更新
         updateI18N();
         
-        // 调音按钮已移到每个指板左下角
-        document.querySelector('.tuning-preset label').innerText = lang.preset + ':';
+        // 调音面板预设标签
+        var presetLabel = document.querySelector('.tuning-row1 label');
+        if (presetLabel) presetLabel.innerText = lang.preset + ':';
         DOM.tuningPreset.options[8].text = lang.custom;
         
         // 更新节拍器标签
@@ -197,21 +198,15 @@
             DOM.metroStartStop.innerText = metro.active ? lang.stop : lang.start;
         }
         
-        // 更新标题（如果是自动生成的）
-        updateAutoTitle();
-        
-        // 刷新标注语言 + 重绘所有指板
+        // 刷新所有指板的标注文字 + 标题跟随语言切换
         if (G.fretboardMgr) {
             G.fretboardMgr.getAll().forEach(function(fb) {
-                // 刷新标注文本（音级模式的音程名跟随语言切换）
-                fb.controller.refreshAllTemplateStyles();
-                var t = fb.controller.currentTemplate;
-                var title = fb.boardTitle || '';
+                if (fb.controller) fb.controller.refreshAllTemplateStyles();
+                var t = fb.controller ? fb.controller.currentTemplate : null;
                 if (t && t.type === 'scale') {
-                    title = currentLang === 'zh'
+                    fb.boardTitle = currentLang === 'zh'
                         ? (t.root + '调 ' + (lang.scales[t.scaleType] || '音阶'))
                         : (t.root + ' ' + (lang.scales[t.scaleType] || 'Scale'));
-                    fb.boardTitle = title;
                 } else if (t && t.type === 'chord') {
                     var roman = ["I","II","III","IV","V","VI","VII"][t.degree-1] || '';
                     var chordName = lang.chords[t.family] || '';
@@ -219,13 +214,15 @@
                     var suffix2 = am === 'note' ? (currentLang === 'zh' ? ' (音名)' : ' (Note Name)')
                         : am === 'solfege' ? (currentLang === 'zh' ? ' (唱名)' : ' (Solfege)')
                         : (currentLang === 'zh' ? ' (音级)' : ' (Interval)');
-                    title = currentLang === 'zh'
+                    fb.boardTitle = currentLang === 'zh'
                         ? (t.root + '调 ' + (lang.scales[t.scaleType] || '') + ' ' + roman + '级' + chordName + suffix2)
                         : (t.root + ' ' + (lang.scales[t.scaleType] || '') + ' ' + roman + ' ' + chordName + suffix2);
-                    fb.boardTitle = title;
                 }
-                fb.renderer.draw(fb.controller.getAnnotations(), fb.controller.currentTemplate, title);
+                fb.renderer.draw(fb.controller.getAnnotations(), fb.controller.currentTemplate, fb.boardTitle || '');
             });
+            // 同步标题输入框到当前激活指板
+            var active = G.fretboardMgr.getActive();
+            if (active && active.boardTitle) DOM.boardTitle.value = active.boardTitle;
         }
     }
     
