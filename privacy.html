@@ -5,7 +5,7 @@
      crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>隐私政策 - GuitarFB</title>
+    <title>Privacy Policy - GuitarFB</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,112 +22,133 @@
             border-radius: 28px;
             padding: 40px;
         }
-        h1 {
-            color: #4a6a3b;
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-align: center;
+        .lang-bar { text-align: right; margin-bottom: 15px; }
+        .lang-bar button {
+            background: #bcab8a; color: white; border: none;
+            padding: 5px 14px; border-radius: 50px; cursor: pointer;
+            font-size: 14px; transition: 0.2s;
         }
-        h2 {
-            color: #4a6a3b;
-            font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        p {
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        ul {
-            margin-left: 30px;
-            margin-bottom: 15px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
-        .nav-links {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #bcab8a;
-        }
-        .nav-links a {
-            display: inline-block;
-            margin: 0 15px;
-            color: #4a6a3b;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #bcab8a;
-            color: #8b7a65;
-            font-size: 14px;
-        }
+        .lang-bar button:hover { background: #5a4a3a; }
+        h1 { color: #4a6a3b; font-size: 28px; margin-bottom: 20px; text-align: center; }
+        h2 { color: #4a6a3b; font-size: 20px; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 15px; font-size: 16px; }
+        ul { margin-left: 30px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; }
+        .nav-links { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #bcab8a; }
+        .nav-links a { display: inline-block; margin: 0 15px; color: #4a6a3b; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #bcab8a; color: #8b7a65; font-size: 14px; }
+        [data-lang="en"] { display: none; }
+        body.en [data-lang="en"] { display: inline; }
+        body.en [data-lang="zh"] { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>隐私政策</h1>
-        <p><strong>最后更新日期：2025年1月</strong></p>
+        <div class="lang-bar">
+            <button onclick="toggleLang()" id="langBtn">EN</button>
+        </div>
 
-        <h2>1. 简介</h2>
-        <p>欢迎使用 GuitarFB（"我们"、"本网站"）。我们重视您的隐私，本隐私政策说明我们如何收集、使用和保护您的信息。</p>
+        <h1 data-lang="zh">隐私政策</h1>
+        <h1 data-lang="en">Privacy Policy</h1>
+        <p data-lang="zh"><strong>最后更新日期：2025年1月</strong></p>
+        <p data-lang="en"><strong>Last updated: January 2025</strong></p>
 
-        <h2>2. 信息收集</h2>
-        <p>我们收集的信息包括：</p>
-        <ul>
+        <h2 data-lang="zh">1. 简介</h2>
+        <h2 data-lang="en">1. Introduction</h2>
+        <p data-lang="zh">欢迎使用 GuitarFB。我们重视您的隐私，本隐私政策说明我们如何收集、使用和保护您的信息。</p>
+        <p data-lang="en">Welcome to GuitarFB. We value your privacy. This policy explains how we collect, use, and protect your information.</p>
+
+        <h2 data-lang="zh">2. 信息收集</h2>
+        <h2 data-lang="en">2. Information We Collect</h2>
+        <ul data-lang="zh">
             <li><strong>使用数据</strong>：浏览器类型、访问时间、页面浏览量</li>
             <li><strong>Cookie</strong>：用于改善用户体验和显示相关广告</li>
             <li><strong>本地存储</strong>：您的设置和偏好（仅存储在您的设备上）</li>
         </ul>
+        <ul data-lang="en">
+            <li><strong>Usage Data</strong>: Browser type, visit time, page views</li>
+            <li><strong>Cookies</strong>: For user experience and relevant ads</li>
+            <li><strong>Local Storage</strong>: Your settings and preferences (device only)</li>
+        </ul>
 
-        <h2>3. 广告服务</h2>
-        <p>我们使用 Google AdSense 显示广告。Google 可能使用 Cookie 和 Web Beacon 收集信息，用于：</p>
-        <ul>
+        <h2 data-lang="zh">3. 广告服务</h2>
+        <h2 data-lang="en">3. Advertising</h2>
+        <p data-lang="zh">我们使用 Google AdSense 显示广告。Google 可能使用 Cookie 收集信息，用于：</p>
+        <p data-lang="en">We use Google AdSense to display ads. Google may use cookies to:</p>
+        <ul data-lang="zh">
             <li>显示个性化广告</li>
             <li>衡量广告效果</li>
             <li>防止欺诈和滥用</li>
         </ul>
-        <p>您可以通过 <a href="https://adssettings.google.com" target="_blank">Google 广告设置</a> 管理个性化广告偏好。</p>
+        <ul data-lang="en">
+            <li>Show personalized ads</li>
+            <li>Measure ad performance</li>
+            <li>Prevent fraud and abuse</li>
+        </ul>
+        <p data-lang="zh">您可以通过 <a href="https://adssettings.google.com" target="_blank">Google 广告设置</a> 管理个性化广告偏好。</p>
+        <p data-lang="en">Manage your ad preferences at <a href="https://adssettings.google.com" target="_blank">Google Ad Settings</a>.</p>
 
-        <h2>4. Cookie 使用</h2>
-        <p>我们使用以下类型的 Cookie：</p>
-        <ul>
+        <h2 data-lang="zh">4. Cookie 使用</h2>
+        <h2 data-lang="en">4. Cookies</h2>
+        <ul data-lang="zh">
             <li><strong>必要 Cookie</strong>：确保网站正常运行</li>
             <li><strong>功能 Cookie</strong>：记住您的设置和偏好</li>
             <li><strong>广告 Cookie</strong>：由 Google AdSense 使用</li>
         </ul>
+        <ul data-lang="en">
+            <li><strong>Essential</strong>: Website functionality</li>
+            <li><strong>Functional</strong>: Remember your preferences</li>
+            <li><strong>Advertising</strong>: Used by Google AdSense</li>
+        </ul>
 
-        <h2>5. 数据安全</h2>
-        <p>我们采取合理措施保护您的信息，但请注意互联网传输无法保证100%安全。</p>
+        <h2 data-lang="zh">5. 数据安全</h2>
+        <h2 data-lang="en">5. Data Security</h2>
+        <p data-lang="zh">我们采取合理措施保护您的信息，但互联网传输无法保证100%安全。</p>
+        <p data-lang="en">We take reasonable measures to protect your data, but no internet transmission is 100% secure.</p>
 
-        <h2>6. 第三方链接</h2>
-        <p>本网站可能包含指向第三方网站的链接。我们对这些网站的隐私政策不承担责任。</p>
+        <h2 data-lang="zh">6. 第三方链接</h2>
+        <h2 data-lang="en">6. Third-Party Links</h2>
+        <p data-lang="zh">本网站可能包含指向第三方网站的链接。我们不对其隐私政策承担责任。</p>
+        <p data-lang="en">This site may contain links to third-party websites. We are not responsible for their privacy practices.</p>
 
-        <h2>7. 儿童隐私</h2>
-        <p>本网站不面向13岁以下儿童。如果您是父母或监护人，发现儿童向我们提供了个人信息，请联系我们。</p>
+        <h2 data-lang="zh">7. 儿童隐私</h2>
+        <h2 data-lang="en">7. Children's Privacy</h2>
+        <p data-lang="zh">本网站不面向13岁以下儿童。</p>
+        <p data-lang="en">This website is not intended for children under 13.</p>
 
-        <h2>8. 政策更新</h2>
-        <p>我们可能不时更新本隐私政策。更新后的政策将在本页面发布。</p>
+        <h2 data-lang="zh">8. 政策更新</h2>
+        <h2 data-lang="en">8. Policy Updates</h2>
+        <p data-lang="zh">我们可能不时更新本隐私政策。更新后的政策将在本页面发布。</p>
+        <p data-lang="en">We may update this policy from time to time. Changes will be posted on this page.</p>
 
-        <h2>9. 联系我们</h2>
-        <p>如有任何问题或疑虑，请通过以下方式联系我们：</p>
-        <p>邮箱：dloach@foxmail.com</p>
+        <h2 data-lang="zh">9. 联系我们</h2>
+        <h2 data-lang="en">9. Contact Us</h2>
+        <p data-lang="zh">如有任何问题或疑虑，请通过以下方式联系我们：</p>
+        <p data-lang="en">For any questions or concerns, please contact us at:</p>
+        <p>📧 dloach@foxmail.com</p>
 
         <div class="nav-links">
-            <a href="index.html">🏠 首页</a>
-            <a href="about.html">🎸 关于我们</a>
+            <a href="index.html" data-lang="zh">🏠 首页</a>
+            <a href="index.html" data-lang="en">🏠 Home</a>
+            <a href="about.html" data-lang="zh">🎸 关于我们</a>
+            <a href="about.html" data-lang="en">🎸 About Us</a>
         </div>
 
-        <div class="footer">
-            © 2025 GuitarFB. 保留所有权利。
-        </div>
+        <div class="footer" data-lang="zh">© 2025 GuitarFB. 保留所有权利。</div>
+        <div class="footer" data-lang="en">© 2025 GuitarFB. All rights reserved.</div>
     </div>
+
+    <script>
+        var lang = localStorage.getItem('guitarfb-lang') || 'zh';
+        document.body.classList.toggle('en', lang === 'en');
+        document.getElementById('langBtn').textContent = lang === 'zh' ? 'EN' : '中文';
+        function toggleLang() {
+            var next = document.body.classList.contains('en') ? 'zh' : 'en';
+            document.body.classList.toggle('en', next === 'en');
+            document.getElementById('langBtn').textContent = next === 'zh' ? 'EN' : '中文';
+            localStorage.setItem('guitarfb-lang', next);
+        }
+    </script>
 </body>
 </html>

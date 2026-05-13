@@ -5,7 +5,7 @@
      crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>关于我们 - GuitarFB</title>
+    <title>About Us - GuitarFB</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,122 +22,107 @@
             border-radius: 28px;
             padding: 40px;
         }
-        h1 {
-            color: #4a6a3b;
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-align: center;
+        .lang-bar { text-align: right; margin-bottom: 15px; }
+        .lang-bar button {
+            background: #bcab8a; color: white; border: none;
+            padding: 5px 14px; border-radius: 50px; cursor: pointer;
+            font-size: 14px; transition: 0.2s;
         }
-        h2 {
-            color: #4a6a3b;
-            font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        p {
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
+        .lang-bar button:hover { background: #5a4a3a; }
+        h1 { color: #4a6a3b; font-size: 28px; margin-bottom: 20px; text-align: center; }
+        h2 { color: #4a6a3b; font-size: 20px; margin-top: 30px; margin-bottom: 15px; }
+        p { margin-bottom: 15px; font-size: 16px; }
         .feature-list {
-            background: #ece3d0;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px 0;
+            background: #ece3d0; border-radius: 16px; padding: 20px; margin: 20px 0;
         }
-        .feature-list ul {
-            margin-left: 25px;
-        }
-        .feature-list li {
-            margin-bottom: 10px;
-        }
+        .feature-list ul { margin-left: 25px; }
+        .feature-list li { margin-bottom: 10px; }
         .contact-box {
-            background: #4a6a3b;
-            color: #fdf8e7;
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 30px;
-            text-align: center;
+            background: #4a6a3b; color: #fdf8e7;
+            border-radius: 16px; padding: 20px; margin-top: 30px; text-align: center;
         }
-        .contact-box h2 {
-            color: #fdf8e7;
-            margin-top: 0;
-        }
-        .contact-box a {
-            color: #ffcc77;
-            text-decoration: none;
-        }
-        .nav-links {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #bcab8a;
-        }
-        .nav-links a {
-            display: inline-block;
-            margin: 0 15px;
-            color: #4a6a3b;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #bcab8a;
-            color: #8b7a65;
-            font-size: 14px;
-        }
+        .contact-box h2 { color: #fdf8e7; margin-top: 0; }
+        .contact-box a { color: #ffcc77; text-decoration: none; }
+        .nav-links { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #bcab8a; }
+        .nav-links a { display: inline-block; margin: 0 15px; color: #4a6a3b; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #bcab8a; color: #8b7a65; font-size: 14px; }
+        [data-lang="en"] { display: none; }
+        body.en [data-lang="en"] { display: inline; }
+        body.en [data-lang="zh"] { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎸 关于 GuitarFB</h1>
+        <div class="lang-bar">
+            <button onclick="toggleLang()" id="langBtn">EN</button>
+        </div>
 
-        <h2>我们的使命</h2>
-        <p>GuitarFB 是一个免费的在线吉他指板学习工具，旨在帮助吉他爱好者更好地理解和掌握指板上的音阶、和弦和音程关系。无论你是初学者还是进阶玩家，都能在这里找到适合自己的练习方式。</p>
+        <h1 data-lang="zh">🎸 关于 GuitarFB</h1>
+        <h1 data-lang="en">🎸 About GuitarFB</h1>
 
-        <h2>核心功能</h2>
+        <h2 data-lang="zh">我们的使命</h2>
+        <h2 data-lang="en">Our Mission</h2>
+        <p data-lang="zh">GuitarFB 是一个免费的在线吉他指板学习工具，旨在帮助吉他爱好者更好地理解和掌握指板上的音阶、和弦和音程关系。无论你是初学者还是进阶玩家，都能在这里找到适合自己的练习方式。</p>
+        <p data-lang="en">GuitarFB is a free online guitar fretboard learning tool designed to help guitar enthusiasts better understand and master scales, chords, and intervals on the fretboard. Whether you're a beginner or an advanced player, you'll find practice methods that suit your level.</p>
+
+        <h2 data-lang="zh">核心功能</h2>
+        <h2 data-lang="en">Key Features</h2>
         <div class="feature-list">
-            <ul>
+            <ul data-lang="zh">
                 <li><strong>可视化指板</strong> - 清晰展示吉他指板上的音符位置</li>
-                <li><strong>多种音阶</strong> - 支持自然大调、小调、五声音阶、布鲁斯音阶等14种音阶</li>
-                <li><strong>和弦生成</strong> - 自动生成三和弦、七和弦、九和弦等各种和弦指法</li>
-                <li><strong>自定义调弦</strong> - 支持标准调弦及多种特殊调弦方式</li>
-                <li><strong>节拍器</strong> - 内置节拍器功能，辅助节奏练习</li>
-                <li><strong>标注系统</strong> - 可在指板上添加自定义标注，记录重点位置</li>
-                <li><strong>数据导出</strong> - 支持JSON格式导入导出，保存你的练习配置</li>
+                <li><strong>多种音阶</strong> - 支持14种音阶类型</li>
+                <li><strong>和弦生成</strong> - 自动生成三和弦到十三和弦</li>
+                <li><strong>自定义调弦</strong> - 支持标准及多种特殊调弦</li>
+                <li><strong>节拍器</strong> - 内置节拍器功能</li>
+                <li><strong>标注系统</strong> - 添加自定义标注</li>
+                <li><strong>数据导出</strong> - JSON格式导入导出</li>
+            </ul>
+            <ul data-lang="en">
+                <li><strong>Visual Fretboard</strong> - Clear note position display</li>
+                <li><strong>Multiple Scales</strong> - 14 scale types supported</li>
+                <li><strong>Chord Generation</strong> - Triads through 13th chords</li>
+                <li><strong>Custom Tuning</strong> - Standard and alternate tunings</li>
+                <li><strong>Metronome</strong> - Built-in rhythm trainer</li>
+                <li><strong>Annotation System</strong> - Custom markers on fretboard</li>
+                <li><strong>Data Export</strong> - JSON import/export</li>
             </ul>
         </div>
 
-        <h2>使用说明</h2>
-        <p>1. 选择调性和音阶/和弦类型</p>
-        <p>2. 点击生成按钮，指板上会显示对应的音符位置</p>
-        <p>3. 使用标注功能标记重点位置</p>
-        <p>4. 开启节拍器进行节奏练习</p>
-
-        <h2>技术特点</h2>
-        <p>• 完全在浏览器中运行，无需安装任何软件</p>
-        <p>• 支持PC和移动设备，随时随地练习</p>
-        <p>• 响应式设计，适配各种屏幕尺寸</p>
-        <p>• 支持中英文双语切换</p>
+        <h2 data-lang="zh">技术特点</h2>
+        <h2 data-lang="en">Technical Highlights</h2>
+        <p data-lang="zh">• 完全在浏览器中运行，无需安装<br>• 支持PC和移动设备<br>• 响应式设计，适配各种屏幕尺寸<br>• 支持中英文双语切换</p>
+        <p data-lang="en">• Runs entirely in the browser, no installation required<br>• PC and mobile friendly<br>• Responsive design for all screen sizes<br>• Chinese/English bilingual support</p>
 
         <div class="contact-box">
-            <h2>联系我们</h2>
-            <p>有任何建议或问题？欢迎与我们联系！</p>
-            <p>📧 邮箱：<a href="mailto:dloach@foxmail.com">dloach@foxmail.com</a></p>
+            <h2 data-lang="zh">联系我们</h2>
+            <h2 data-lang="en">Contact Us</h2>
+            <p data-lang="zh">有任何建议或问题？欢迎与我们联系！</p>
+            <p data-lang="en">Questions or suggestions? Get in touch!</p>
+            <p>📧 <a href="mailto:dloach@foxmail.com">dloach@foxmail.com</a></p>
         </div>
 
         <div class="nav-links">
-            <a href="index.html">🏠 首页</a>
-            <a href="privacy.html">🔒 隐私政策</a>
+            <a href="index.html" data-lang="zh">🏠 首页</a>
+            <a href="index.html" data-lang="en">🏠 Home</a>
+            <a href="privacy.html" data-lang="zh">🔒 隐私政策</a>
+            <a href="privacy.html" data-lang="en">🔒 Privacy Policy</a>
         </div>
 
-        <div class="footer">
-            © 2025 GuitarFB. 保留所有权利。
-        </div>
+        <div class="footer" data-lang="zh">© 2025 GuitarFB. 保留所有权利。</div>
+        <div class="footer" data-lang="en">© 2025 GuitarFB. All rights reserved.</div>
     </div>
+
+    <script>
+        var lang = localStorage.getItem('guitarfb-lang') || 'zh';
+        document.body.classList.toggle('en', lang === 'en');
+        document.getElementById('langBtn').textContent = lang === 'zh' ? 'EN' : '中文';
+        function toggleLang() {
+            var next = document.body.classList.contains('en') ? 'zh' : 'en';
+            document.body.classList.toggle('en', next === 'en');
+            document.getElementById('langBtn').textContent = next === 'zh' ? 'EN' : '中文';
+            localStorage.setItem('guitarfb-lang', next);
+        }
+    </script>
 </body>
 </html>
