@@ -347,32 +347,37 @@
         var grid = DOM.paletteGrid;
         if (!panel || !grid || !G.PALETTES) return;
         var lang = G.currentLang || 'zh';
-        var ids = Object.keys(G.PALETTES);
-        ids.forEach(function(id) {
-            var p = G.PALETTES[id];
-            var card = document.createElement('div');
-            card.className = 'palette-card';
-            card.dataset.palette = id;
-            var swatches = document.createElement('div');
-            swatches.className = 'palette-swatches';
-            var cc = p.colors;
-            var keys = ['bg','card','panel','canvas','text','muted','btn','accent','danger','border'];
-            keys.forEach(function(k) {
-                var dot = document.createElement('span');
-                dot.style.background = cc[k];
-                swatches.appendChild(dot);
+        // 显式排列：每行 [浅色, 深色] 配对，确保左浅右深
+        var pairs = [
+            ['warm-cream',   'monochrome'],
+            ['retro-warm',   'cool-midnight'],
+            ['nordic',       'cyber-neon'],
+            ['forest',       'ember-night']
+        ];
+        pairs.forEach(function(row) {
+            row.forEach(function(id) {
+                var p = G.PALETTES[id];
+                if (!p) return;
+                var card = document.createElement('div');
+                card.className = 'palette-card';
+                card.dataset.palette = id;
+                var swatches = document.createElement('div');
+                swatches.className = 'palette-swatches';
+                var cc = p.colors;
+                var keys = ['bg','card','panel','canvas','text','muted','btn','accent','danger','border'];
+                keys.forEach(function(k) {
+                    var dot = document.createElement('span');
+                    dot.style.background = cc[k];
+                    swatches.appendChild(dot);
+                });
+                card.appendChild(swatches);
+                card.addEventListener('click', function() {
+                    applyPalette(id);
+                    panel.style.display = 'none';
+                    try { localStorage.setItem('guitarfb-palette', id); } catch(ex) {}
+                });
+                grid.appendChild(card);
             });
-            card.appendChild(swatches);
-            var nameDiv = document.createElement('div');
-            nameDiv.className = 'palette-name';
-            nameDiv.textContent = p.name[lang] || p.name.en;
-            card.appendChild(nameDiv);
-            card.addEventListener('click', function() {
-                applyPalette(id);
-                panel.style.display = 'none';
-                try { localStorage.setItem('guitarfb-palette', id); } catch(ex) {}
-            });
-            grid.appendChild(card);
         });
         var saved = 'warm-cream';
         try { saved = localStorage.getItem('guitarfb-palette') || 'warm-cream'; } catch(ex) {}
@@ -1508,12 +1513,6 @@
         if (G.AutoSaveManager && G.fretboardMgr) {
             G.autoSave = new G.AutoSaveManager(G.fretboardMgr);
             _restoreOk = G.autoSave.restore();
-            // 恢复后刷新标注颜色，使已存数据适配当前 palatte（而非上次保存时的颜色）
-            if (_restoreOk && G.fretboardMgr) {
-                G.fretboardMgr.getAll().forEach(function(fb) {
-                    if (fb.controller) fb.controller.refreshAllTemplateStyles();
-                });
-            }
             // 恢复后同步语言按钮和界面
             if (G.currentLang !== currentLang) {
                 currentLang = G.currentLang;
@@ -1522,16 +1521,23 @@
                 updateI18N();
                 updateSelectOptions();
             }
+            // 兼容 Safari：pagehide 和 beforeunload 双重保险
             window.addEventListener('beforeunload', () => G.autoSave.save());
+            window.addEventListener('pagehide', () => G.autoSave.save());
         }
         
+        // 恢复后刷新标注颜色 + 重绘所有指板（包括未激活的）
+        if (G.fretboardMgr) {
+            G.fretboardMgr.getAll().forEach(function(fb) {
+                if (fb.controller) fb.controller.refreshAllTemplateStyles();
+                fb.renderer.draw(fb.controller.getAnnotations(), fb.controller.currentTemplate, fb.boardTitle || '');
+            });
+            // 同步标题输入框到当前激活指板
+            var active = G.fretboardMgr.getActive();
+            if (active && active.boardTitle) DOM.boardTitle.value = active.boardTitle;
+        }
         // 恢复后同步标注模式按钮和语言
         syncModeUI();
-        
-        // 恢复后确保当前指板正确绘制
-        if (renderer && controller) {
-            renderer.draw(controller.getAnnotations(), controller.currentTemplate, DOM.boardTitle.value);
-        }
         
         // 绑定事件
         bindEvents();

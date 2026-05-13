@@ -446,16 +446,6 @@
                 }
             });
 
-            // 恢复主题
-            if (data.theme) {
-                document.body.setAttribute('data-theme', data.theme);
-                G.currentTheme = data.theme;
-                var D = G.DOM;
-                if (D && D.themeToggle) {
-                    D.themeToggle.innerHTML = data.theme === 'light' ? '🌙' : '☀️';
-                }
-            }
-
             // 恢复语言
             if (data.lang && data.lang !== G.currentLang) {
                 G.currentLang = data.lang;

@@ -62,30 +62,16 @@
 
     // 颜色主题 ——————————————————————————————————————
     G.PALETTES = {
+        // 左列：浅色
         'warm-cream': {
             name: { zh: '晨露', en: 'Morning Dew' },
             colors: { bg:'#3A4A3A', card:'#F2F0E8', panel:'#E8E4D8', canvas:'#F5F2E8',
                 text:'#3A3A2A', muted:'#909080', btn:'#5A7A6A', accent:'#D49840', danger:'#6A5A3A', border:'#B0AA90' }
         },
-        'cool-midnight': {
-            name: { zh: '冷夜星辰', en: 'Cool Midnight' },
-            colors: { bg:'#0E1520', card:'#1A2744', panel:'#14213A', canvas:'#1A2744',
-                text:'#E0E4F0', muted:'#7888A0', btn:'#4A7AB8', accent:'#C89840', danger:'#2A3A5A', border:'#3A4A60' }
-        },
-        'monochrome': {
-            name: { zh: '极简黑白', en: 'Monochrome' },
-            colors: { bg:'#1A1A1A', card:'#F8F8F8', panel:'#E8E8E8', canvas:'#F0F0F0',
-                text:'#1A1A1A', muted:'#888888', btn:'#444444', accent:'#666666', danger:'#222222', border:'#AAAAAA' }
-        },
         'retro-warm': {
             name: { zh: '复古暖屏', en: 'Retro Warm' },
             colors: { bg:'#2A2420', card:'#E6D8C0', panel:'#D4C5A9', canvas:'#F0E4C8',
                 text:'#3A3028', muted:'#887A62', btn:'#8A6A44', accent:'#A8803A', danger:'#5A3A28', border:'#B8A482' }
-        },
-        'cyber-neon': {
-            name: { zh: '赛博霓虹', en: 'Cyber Neon' },
-            colors: { bg:'#0A0812', card:'#1E1428', panel:'#14101E', canvas:'#1E1428',
-                text:'#FFE8EE', muted:'#887088', btn:'#FF2266', accent:'#FF8800', danger:'#4A1840', border:'#3A2A48' }
         },
         'nordic': {
             name: { zh: '北欧清新', en: 'Nordic Fresh' },
@@ -96,6 +82,22 @@
             name: { zh: '森林绿意', en: 'Forest' },
             colors: { bg:'#1A2E1A', card:'#EEF5E4', panel:'#DCE8C8', canvas:'#F5FAEE',
                 text:'#2A3A1A', muted:'#7A9A5A', btn:'#4A8A3A', accent:'#C8A030', danger:'#3A5A2A', border:'#AAB890' }
+        },
+        // 右列：深色（极简黑白排第一）
+        'monochrome': {
+            name: { zh: '极简黑白', en: 'Monochrome' },
+            colors: { bg:'#1A1A1A', card:'#F8F8F8', panel:'#E8E8E8', canvas:'#F0F0F0',
+                text:'#1A1A1A', muted:'#888888', btn:'#444444', accent:'#666666', danger:'#222222', border:'#AAAAAA' }
+        },
+        'cool-midnight': {
+            name: { zh: '冷夜星辰', en: 'Cool Midnight' },
+            colors: { bg:'#0E1520', card:'#1A2744', panel:'#14213A', canvas:'#1A2744',
+                text:'#E0E4F0', muted:'#7888A0', btn:'#4A7AB8', accent:'#C89840', danger:'#2A3A5A', border:'#3A4A60' }
+        },
+        'cyber-neon': {
+            name: { zh: '赛博霓虹', en: 'Cyber Neon' },
+            colors: { bg:'#0A0812', card:'#1E1428', panel:'#14101E', canvas:'#1E1428',
+                text:'#FFE8EE', muted:'#887088', btn:'#FF2266', accent:'#FF8800', danger:'#4A1840', border:'#3A2A48' }
         },
         'ember-night': {
             name: { zh: '烬夜', en: 'Ember Night' },
