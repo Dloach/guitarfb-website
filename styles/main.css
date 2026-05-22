@@ -1182,6 +1182,32 @@ input[type="range"] { width: 140px; accent-color: var(--clr-accent); }
     opacity: 0.4;
 }
 
+/* 内容板块（供 AdSense 爬取） */
+.content-section {
+    max-width: 800px;
+    margin: 28px auto;
+    padding: 24px 28px;
+    background: var(--clr-card);
+    border-radius: 20px;
+    color: var(--clr-text);
+    line-height: 1.9;
+}
+.content-section h2 {
+    font-size: 20px;
+    margin-bottom: 14px;
+    color: var(--clr-accent);
+}
+.content-section h3 {
+    font-size: 17px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--clr-text);
+}
+.content-section p {
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
 /* ============================================
    响应式样式 - 移动端（使用CSS变量）
    ============================================ */
