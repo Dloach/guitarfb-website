@@ -20,9 +20,6 @@
 </head>
 <body data-theme="light">
 <div class="container">
-    <!-- 顶部介绍（供 AdSense 爬取 + 用户第一眼了解用途） -->
-    <div class="site-intro" data-lang="zh">🎸 <strong>GuitarFB</strong> — 免费在线吉他指板学习工具，支持 14 种音阶、多种和弦类型、多指板对比、内置节拍器。无需下载，即开即用。</div>
-    <div class="site-intro" data-lang="en">🎸 <strong>GuitarFB</strong> — Free online guitar fretboard tool. 14 scale types, multiple chord voicings, multi-board comparison, built-in metronome. No download required.</div>
     <div class="title-bar">
         <label id="labelBoardTitle" data-i18n="labelBoardTitle">🎸 标题</label>
         <input type="text" id="boardTitle" value="吉他指板练习" data-i18n-placeholder="boardTitlePlaceholder" placeholder="自动或手动填写">
@@ -131,49 +128,6 @@
         <div class="metro-group"><span class="metro-label" data-i18n="accent">重音</span><div id="accentToggle" class="toggle-switch active"></div></div>
         <div class="metro-group"><span class="metro-label" data-i18n="timer">定时</span><input type="number" id="timerMinutes" value="1" min="1" class="metro-timer-input"><div id="timerToggle" class="toggle-switch"></div></div>
         <div class="metro-group"><div id="metroStartStop" class="metro-btn" data-i18n="start">▶ 启动</div><div id="countdownDisplay" class="countdown-timer">--:--</div><button id="metroTap" class="metro-btn" title="Tap Tempo">👆</button></div>
-    </div>
-</div>
-
-<!-- 内容板块（供 AdSense 爬取） -->
-<div class="content-section">
-    <div data-lang="zh">
-    <h2>🎸 吉他指板学习指南</h2>
-    <p>GuitarFB 是一款免费在线吉他指板工具，帮助吉他手快速掌握指板上的音阶与和弦指法。无论你是刚入门还是进阶演奏者，这套工具都能辅助你的日常练习。</p>
-
-    <h3>音阶与调性</h3>
-    <p>首先在"调性"下拉菜单中选择您想要练习的根音（如 C、G、A），然后在"音阶"列表中选择一种调式——从自然大调、自然小调到布鲁斯音阶、日本音阶等共 14 种。点击<strong>✨ 音阶</strong>按钮，指板上会以彩色标注突出显示该调性下的所有音符位置。</p>
-
-    <h3>和弦构成</h3>
-    <p>选择根音和调式后，在"级数"下拉菜单中指定和弦级数（I 级到 VII 级），再选择和弦类型——三和弦、七和弦、九和弦等。点击<strong>🎼 和弦</strong>按钮生成对应的和弦指法图。您还可以切换<strong>音名 / 唱名 / 音程</strong>三种标注模式，帮助理解每个音符在和弦中的角色。</p>
-
-    <h3>练习技巧</h3>
-    <p><strong>循环练习：</strong>选择一个调性的所有级数和弦，逐个生成并在指板上找出共同音与变化音。<br>
-    <strong>调弦自定义：</strong>每块指板左下角的调音按钮可独立设置弦音，支持 Drop D、Open G 等特殊调弦。<br>
-    <strong>多指板对比：</strong>点击右上角"＋"按钮添加新指板，可同时对比不同调性或调式的指板布局。<br>
-    <strong>标注系统：</strong>使用手动标注和音高标注在指板上标记重点位置。</p>
-
-    <h3>节拍器辅助</h3>
-    <p>内置节拍器支持 BPM 调节、拍号选择、节奏细分（八分/十六分/三连音）、重音切换和定时练习。点击 BPM 数字可直接输入数值，👆 按钮可手动打点测速。</p>
-    </div>
-
-    <div data-lang="en">
-    <h2>🎸 Guitar Fretboard Learning Guide</h2>
-    <p>GuitarFB is a free online guitar fretboard tool that helps guitarists quickly master scales and chord shapes on the fretboard. Whether you're a beginner or an advanced player, this tool supports your daily practice.</p>
-
-    <h3>Scales &amp; Keys</h3>
-    <p>Select a root note from the Key dropdown (C, G, A, etc.), then pick a scale mode from the list — Major, Minor, Blues, Japanese, and 10 more. Click <strong>✨ Scale</strong> to highlight every note of that scale on the fretboard with color-coded markers.</p>
-
-    <h3>Chord Construction</h3>
-    <p>After choosing a key and scale, pick a chord degree (I through VII) and a chord type — Triad, 7th, 9th, 11th, or 13th. Click <strong>🎼 Chord</strong> to generate the chord diagram. Switch between <strong>Note / Solfege / Interval</strong> modes to understand each note's role in the chord.</p>
-
-    <h3>Practice Tips</h3>
-    <p><strong>Cycle Practice:</strong> Generate all degrees of a key and find common tones vs. changing notes.<br>
-    <strong>Custom Tuning:</strong> Each fretboard has its own tuning button (bottom-left). Supports Drop D, Open G, DADGAD, and more.<br>
-    <strong>Multi-Board Comparison:</strong> Click the "+" button to add fretboards and compare different keys or tunings side by side.<br>
-    <strong>Annotations:</strong> Use manual markers and pitch labels to mark important positions.</p>
-
-    <h3>Metronome</h3>
-    <p>The built-in metronome supports BPM adjustment, time signature, rhythm subdivision (8th/16th/triplet), accent toggle, and countdown timer. Double-click the BPM value to type a number, or tap the 👆 button to tap tempo.</p>
     </div>
 </div>
 

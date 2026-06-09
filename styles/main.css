@@ -1182,17 +1182,7 @@ input[type="range"] { width: 140px; accent-color: var(--clr-accent); }
     opacity: 0.4;
 }
 
-/* 顶部介绍 */
-.site-intro {
-    text-align: center;
-    padding: 10px 16px 6px;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--clr-text);
-    opacity: 0.92;
-}
-
-/* 内容板块（供 AdSense 爬取） */
+/* 内容板块 */
 .content-section {
     max-width: 800px;
     margin: 28px auto;
